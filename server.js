@@ -10,6 +10,10 @@ MongoClient.connect('mongodb+srv://dbUser:1qwsde345g**@cluster0.0amcl.mongodb.ne
     .then(client =>{
         console.log('Connected to Database')
         const db = client.db('motivational-quotes')
+        const quotesCollection = db.collection('quotes')
+
+        app.set('view engine', 'ejs')
+        
         app.use(bodyParser.urlencoded({ extended:true }))
 
         app.listen('3000', () => {
@@ -17,11 +21,21 @@ MongoClient.connect('mongodb+srv://dbUser:1qwsde345g**@cluster0.0amcl.mongodb.ne
         })
 
         app.get('/', (req, res) =>{
-            res.sendFile(__dirname + '/index.html')
+            db.collection('quotes').find().toArray()
+                .then(results =>{
+                    console.log(results)
+                })
+                .catch(err => console.log(err))
+                // console.log(cursor)
+                // res.sendFile(__dirname + '/index.html')
         })
 
         app.post('/quotes', (req,res) => {
-            console.log(req.body)
+            quotesCollection.insertOne(req.body)
+                .then(result =>{
+                    res.redirect('/')
+                })
+                .catch(err => console.log(err))
         })
     })
     .catch(err => console.log(err))
