@@ -15,6 +15,8 @@ MongoClient.connect('mongodb+srv://dbUser:1qwsde345g**@cluster0.0amcl.mongodb.ne
         app.set('view engine', 'ejs')
 
         app.use(bodyParser.urlencoded({ extended:true }))
+        app.use(express.static('public'))
+        app.use(bodyParser.json())
 
         app.listen('3000', () => {
             console.log('Listening on port 3000')
@@ -38,6 +40,24 @@ MongoClient.connect('mongodb+srv://dbUser:1qwsde345g**@cluster0.0amcl.mongodb.ne
                     res.redirect('/')
                 })
                 .catch(err => console.log(err))
+        })
+
+        app.put('/quotes', (req, res) => {
+            quotesCollection.findOneAndUpdate(
+                {name: 'jonathan'},
+                {$set: {
+                    name: req.body.name,
+                    quote: req.body.quote
+                }},
+                {
+                    upsert: true
+                }
+            )
+            .then(result => {
+                console.log(result)
+                res.json('Success')
+            })
+            .catch(error => console.error(error))
         })
     })
     .catch(err => console.log(err))
