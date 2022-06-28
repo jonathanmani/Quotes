@@ -13,7 +13,7 @@ MongoClient.connect('mongodb+srv://dbUser:1qwsde345g**@cluster0.0amcl.mongodb.ne
         const quotesCollection = db.collection('quotes')
 
         app.set('view engine', 'ejs')
-        
+
         app.use(bodyParser.urlencoded({ extended:true }))
 
         app.listen('3000', () => {
@@ -24,8 +24,10 @@ MongoClient.connect('mongodb+srv://dbUser:1qwsde345g**@cluster0.0amcl.mongodb.ne
             db.collection('quotes').find().toArray()
                 .then(results =>{
                     console.log(results)
+                    res.render('index.ejs', {quotes: results})
                 })
                 .catch(err => console.log(err))
+            
                 // console.log(cursor)
                 // res.sendFile(__dirname + '/index.html')
         })
